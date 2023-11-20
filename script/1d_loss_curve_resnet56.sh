@@ -2,34 +2,15 @@
 # 1d normalized surface for ResNet-56
 # ===========================================================
 
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_sgd_lr=0.1_bs=128_wd=0.0_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
 
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_sgd_lr=0.1_bs=4096_wd=0.0_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
+#python plot_surface.py --x=-1:1:2 --model resnet18 \
+#--model_file cifar10/trained_nets/baseline_pgd_resnet18/ck.pth.tar \
+#--cuda --dir_type states --xnorm filter --xignore biasbn --plot
 
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_sgd_lr=0.1_bs=128_wd=0.0005_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
+python plot_surface.py --x=-0.1:0.1:5 --y=-0.1:0.1:5 --model resnet18 \
+--model_file cifar10/trained_nets/baseline_pgd_resnet18/ck.pth.tar \
+--surf_file ./cifar10/trained_nets/baseline_pgd_resnet18/baseline_cifar10_5 \
+--cuda --dir_type weights --xignore biasbn --xnorm filter --yignore biasbn --ynorm filter
 
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_sgd_lr=0.1_bs=4096_wd=0.0005_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
-
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_adam_lr=0.001_bs=128_wd=0.0_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
-
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_adam_lr=0.001_bs=4096_wd=0.0_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
-
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_adam_lr=0.001_bs=128_wd=0.0005_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
-
-mpirun -n 4 python plot_surface.py --x=-1:1:51 --model resnet56 \
---model_file cifar10/trained_nets/resnet56_adam_lr=0.001_bs=4096_wd=0.0005_save_epoch=1/model_300.t7 \
---cuda --mpi --dir_type states --xnorm filter --xignore biasbn
+python3 h52vtp.py --surf_file ./cifar10/trained_nets/baseline_pgd_resnet18/baseline_cifar10_5 \
+--surf_name train_loss --zmax 10 --log

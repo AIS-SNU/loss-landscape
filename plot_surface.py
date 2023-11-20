@@ -59,11 +59,11 @@ def setup_surface_file(args, surf_file, dir_file):
     f['dir_file'] = dir_file
 
     # Create the coordinates(resolutions) at which the function is evaluated
-    xcoordinates = np.linspace(args.xmin, args.xmax, num=args.xnum)
+    xcoordinates = np.linspace(args.xmin, args.xmax, num=int(args.xnum))
     f['xcoordinates'] = xcoordinates
 
     if args.y:
-        ycoordinates = np.linspace(args.ymin, args.ymax, num=args.ynum)
+        ycoordinates = np.linspace(args.ymin, args.ymax, num=int(args.ynum))
         f['ycoordinates'] = ycoordinates
     f.close()
 
@@ -161,12 +161,12 @@ if __name__ == '__main__':
     parser.add_argument('--mpi', '-m', action='store_true', help='use mpi')
     parser.add_argument('--cuda', '-c', action='store_true', help='use cuda')
     parser.add_argument('--threads', default=2, type=int, help='number of threads')
-    parser.add_argument('--ngpu', type=int, default=1, help='number of GPUs to use for each rank, useful for data parallel evaluation')
-    parser.add_argument('--batch_size', default=128, type=int, help='minibatch size')
+    parser.add_argument('--ngpu', type=int, default=4, help='number of GPUs to use for each rank, useful for data parallel evaluation')
+    parser.add_argument('--batch_size', default=8192, type=int, help='minibatch size')
 
     # data parameters
-    parser.add_argument('--dataset', default='cifar10', help='cifar10 | imagenet')
-    parser.add_argument('--datapath', default='cifar10/data', metavar='DIR', help='path to the dataset')
+    parser.add_argument('--dataset', default='cifar100', help='cifar10 | imagenet')
+    parser.add_argument('--datapath', default='cifar100/data', metavar='DIR', help='path to the dataset')
     parser.add_argument('--raw_data', action='store_true', default=False, help='no data preprocessing')
     parser.add_argument('--data_split', default=1, type=int, help='the number of splits for the dataloader')
     parser.add_argument('--split_idx', default=0, type=int, help='the index of data splits for the dataloader')
@@ -174,7 +174,7 @@ if __name__ == '__main__':
     parser.add_argument('--testloader', default='', help='path to the testloader with random labels')
 
     # model parameters
-    parser.add_argument('--model', default='resnet56', help='model name')
+    parser.add_argument('--model', default='resnet18', help='model name')
     parser.add_argument('--model_folder', default='', help='the common folder that contains model_file and model_file2')
     parser.add_argument('--model_file', default='', help='path to the trained model file')
     parser.add_argument('--model_file2', default='', help='use (model_file2 - model_file) as the xdirection')
@@ -214,7 +214,10 @@ if __name__ == '__main__':
         comm = mpi.setup_MPI()
         rank, nproc = comm.Get_rank(), comm.Get_size()
     else:
-        comm, rank, nproc = None, 0, 1
+        #os.environ["CUDA_VISIBLE_DEVICES"]= "1"
+        comm, nproc = None, 1
+        rank = 0
+
 
     # in case of multiple GPUs per node, set the GPU to use for each rank
     if args.cuda:
@@ -286,8 +289,8 @@ if __name__ == '__main__':
     #--------------------------------------------------------------------------
     # Start the computation
     #--------------------------------------------------------------------------
-    crunch(surf_file, net, w, s, d, trainloader, 'train_loss', 'train_acc', comm, rank, args)
-    # crunch(surf_file, net, w, s, d, testloader, 'test_loss', 'test_acc', comm, rank, args)
+    #crunch(surf_file, net, w, s, d, trainloader, 'train_loss', 'train_acc', comm, rank, args)
+    crunch(surf_file, net, w, s, d, testloader, 'test_loss', 'test_acc', comm, rank, args)
 
     #--------------------------------------------------------------------------
     # Plot figures

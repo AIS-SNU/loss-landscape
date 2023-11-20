@@ -11,9 +11,9 @@ def get_data_loaders(args):
         trainloader = torch.load(args.trainloader)
         testloader = torch.load(args.testloader)
         return trainloader, testloader
-
     normalize = transforms.Normalize(mean=[x/255.0 for x in [125.3, 123.0, 113.9]],
                                      std=[x/255.0 for x in [63.0, 62.1, 66.7]])
+
 
     if args.raw_data:
         transform_train = transforms.Compose([

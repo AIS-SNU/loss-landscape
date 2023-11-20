@@ -1,10 +1,11 @@
 """
     2D plotting funtions
 """
-
-from mpl_toolkits.mplot3d import Axes3D
+#import importlib
+#importlib.import_module('mpl_toolkits').__path__
 from matplotlib import pyplot as plt
 from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 import h5py
 import argparse
 import numpy as np
